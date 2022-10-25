@@ -1,23 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
 
+import './App.css';
+import MovieList from './Components/MovieList';
+import {moviesData} from './MovieData'
+import { useState } from 'react';
+import AddMovieElement from './Components/AddMovieElement';
+import Filter from './Components/Filter';
+import {Routes,Route} from 'react-router-dom'
+import UniqueElement from './Components/UniqueElement';
 function App() {
+  console.log(moviesData)
+  const [movieList,setMovieList]=useState(moviesData)
+  const [search,setSearch]=useState("")
+  //function 
+  const deletCard=(ID)=>{
+    setMovieList(
+      movieList.filter((e)=> e.id !== ID)
+    )
+  }
+
+  const seen=(ID)=>{
+    setMovieList(
+      movieList.map((el)=> (el.id === ID ? {...el,isDone : !el.isDone }: el ) )
+    )
+  }
+
+  const Add=(newMovie)=>{
+    setMovieList(
+      [...movieList,newMovie]
+    )
+
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+     <Filter setSearch={setSearch}/>
+     <Routes>
+      
+     <Route path='/MovieList' element= { <MovieList  movieList={movieList}  deletCard={deletCard}  seen={seen} search={search}/>} />
+
+     <Route path='/AddMovieElement' element={<AddMovieElement Add={Add}/>}/>
+     <Route path='/MovieList/:ID' element={<UniqueElement Movie={moviesData}/>}/>
+     </Routes>
     </div>
   );
 }
